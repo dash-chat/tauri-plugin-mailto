@@ -1,0 +1,39 @@
+<html>
+  <body>
+    <h1>Mailto Plugin Example</h1>
+    <form id="mailto-form">
+      <div>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div>
+        <label for="subject">Subject:</label><br>
+        <input type="text" id="subject" name="subject">
+      </div>
+      <div>
+        <label for="body">Body:</label><br>
+        <textarea id="body" name="body" rows="5" cols="40"></textarea>
+      </div>
+      <button type="submit">Send</button>
+    </form>
+    <script type="module">
+      const { invoke } = window.__TAURI__.core;
+
+      document.getElementById("mailto-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const subject = document.getElementById("subject").value || null;
+        const body = document.getElementById("body").value || null;
+
+        try {
+          await invoke("plugin:mailto|mailto", {
+            request: { email, subject, body },
+          });
+        } catch (err) {
+          console.error("mailto failed:", err);
+          alert("Failed to open mail client: " + err);
+        }
+      });
+    </script>
+  </body>
+</html>
